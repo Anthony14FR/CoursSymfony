@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\WatchHistoryRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WatchHistoryRepository::class)]
@@ -13,8 +14,8 @@ class WatchHistory
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $lastWatchedAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $lastWatched = null;
 
     #[ORM\Column]
     private ?int $numberOfViews = null;
@@ -32,14 +33,21 @@ class WatchHistory
         return $this->id;
     }
 
-    public function getLastWatchedAt(): ?\DateTimeImmutable
+    public function setId(int $id): static
     {
-        return $this->lastWatchedAt;
+        $this->id = $id;
+
+        return $this;
     }
 
-    public function setLastWatchedAt(\DateTimeImmutable $lastWatchedAt): static
+    public function getLastWatched(): ?\DateTimeInterface
     {
-        $this->lastWatchedAt = $lastWatchedAt;
+        return $this->lastWatched;
+    }
+
+    public function setLastWatched(\DateTimeInterface $lastWatched): static
+    {
+        $this->lastWatched = $lastWatched;
 
         return $this;
     }

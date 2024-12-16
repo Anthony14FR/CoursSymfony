@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SubscriptionHistoryRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubscriptionHistoryRepository::class)]
@@ -13,11 +14,11 @@ class SubscriptionHistory
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $startAt = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $startDate = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $endAt = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $endDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'subscriptionHistories')]
     #[ORM\JoinColumn(nullable: false)]
@@ -32,26 +33,33 @@ class SubscriptionHistory
         return $this->id;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
+    public function setId(int $id): static
     {
-        return $this->startAt;
-    }
-
-    public function setStartAt(\DateTimeImmutable $startAt): static
-    {
-        $this->startAt = $startAt;
+        $this->id = $id;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeImmutable
+    public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->endAt;
+        return $this->startDate;
     }
 
-    public function setEndAt(\DateTimeImmutable $endAt): static
+    public function setStartDate(\DateTimeInterface $startDate): static
     {
-        $this->endAt = $endAt;
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(\DateTimeInterface $endDate): static
+    {
+        $this->endDate = $endDate;
 
         return $this;
     }

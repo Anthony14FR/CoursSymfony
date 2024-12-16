@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller\Other;
 
 use App\Repository\SubscriptionRepository;
@@ -18,7 +16,7 @@ class SubscriptionController extends AbstractController
     {
         $subscriptions = $subscriptionRepository->findAll();
 
-        return $this->render('other/abonnements.html.twig', [
+        return $this->render('other/subscriptions.html.twig', [
             'subscriptions' => $subscriptions,
         ]);
     }

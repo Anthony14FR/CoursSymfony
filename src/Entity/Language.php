@@ -15,10 +15,10 @@ class Language
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    #[ORM\Column(length: 100)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 3)]
+    #[ORM\Column(length: 100)]
     private ?string $code = null;
 
     /**
@@ -37,14 +37,21 @@ class Language
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function setId(int $id): static
     {
-        return $this->nom;
+        $this->id = $id;
+
+        return $this;
     }
 
-    public function setNom(string $nom): static
+    public function getName(): ?string
     {
-        $this->nom = $nom;
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
         return $this;
     }

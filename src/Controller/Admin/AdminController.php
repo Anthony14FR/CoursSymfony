@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,5 +25,11 @@ class AdminController extends AbstractController
     public function movies_add(): Response
     {
         return $this->render('admin/admin_add_films.html.twig');
+    }
+
+    #[Route(path: '/users', name: 'admin_users')]
+    public function users(): Response
+    {
+        return $this->render('admin/admin_users.html.twig');
     }
 }
