@@ -23,8 +23,15 @@ class Comment
     #[ORM\Column(enumType: CommentStatusEnum::class)]
     private ?CommentStatusEnum $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $writtenBy = null;
+
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Media $media = null;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'childComments')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?self $parentComment = null;
 
     /**
@@ -32,14 +39,6 @@ class Comment
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment')]
     private Collection $childComments;
-
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $publisher = null;
-
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Media $media = null;
 
     public function __construct()
     {
@@ -49,6 +48,13 @@ class Comment
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getContent(): ?string
@@ -71,6 +77,30 @@ class Comment
     public function setStatus(CommentStatusEnum $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getWrittenBy(): ?User
+    {
+        return $this->writtenBy;
+    }
+
+    public function setWrittenBy(?User $writtenBy): static
+    {
+        $this->writtenBy = $writtenBy;
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?Media $media): static
+    {
+        $this->media = $media;
 
         return $this;
     }
@@ -113,30 +143,6 @@ class Comment
                 $childComment->setParentComment(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getPublisher(): ?User
-    {
-        return $this->publisher;
-    }
-
-    public function setPublisher(?User $publisher): static
-    {
-        $this->publisher = $publisher;
-
-        return $this;
-    }
-
-    public function getMedia(): ?Media
-    {
-        return $this->media;
-    }
-
-    public function setMedia(?Media $media): static
-    {
-        $this->media = $media;
 
         return $this;
     }

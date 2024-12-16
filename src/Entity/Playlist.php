@@ -24,20 +24,20 @@ class Playlist
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'playlists')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
+
     /**
      * @var Collection<int, PlaylistSubscription>
      */
-    #[ORM\OneToMany(targetEntity: PlaylistSubscription::class, mappedBy: 'playlist')]
+    #[ORM\OneToMany(targetEntity: PlaylistSubscription::class, mappedBy: 'playlist', orphanRemoval: true)]
     private Collection $playlistSubscriptions;
-
-    #[ORM\ManyToOne(inversedBy: 'playlists')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $creator = null;
 
     /**
      * @var Collection<int, PlaylistMedia>
      */
-    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'playlist')]
+    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'playlist', orphanRemoval: true)]
     private Collection $playlistMedia;
 
     public function __construct()
@@ -49,6 +49,13 @@ class Playlist
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -87,6 +94,18 @@ class Playlist
         return $this;
     }
 
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, PlaylistSubscription>
      */
@@ -113,18 +132,6 @@ class Playlist
                 $playlistSubscription->setPlaylist(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setCreator(?User $creator): static
-    {
-        $this->creator = $creator;
 
         return $this;
     }

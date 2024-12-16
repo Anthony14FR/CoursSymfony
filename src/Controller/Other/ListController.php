@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller\Other;
 
 use App\Entity\PlaylistSubscription;
@@ -21,14 +19,25 @@ class ListController extends AbstractController
         Request $request,
     ): Response
     {
-        $playlistId = $request->query->get('playlist');
-        $playlist = $playlistRepository->find($playlistId);
+        $user = $this->getUser();
 
-        $playlits = $playlistRepository->findAll();
-        $subscribedPlaylists = $playlistSubscriptionRepository->findAll();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $playlistId = $request->query->get('playlist');
+
+        if ($playlistId) {
+            $playlist = $playlistRepository->find($playlistId);
+        } else {
+            $playlist = null;
+        }
+
+        $playlists = $playlistRepository->findAll();
+        $subscribedPlaylists = $playlistSubscriptionRepository->findBy(['subscriber' => $user]);
 
         return $this->render('other/lists.html.twig', [
-            'playlists' => $playlits,
+            'playlists' => $playlists,
             'subscribedPlaylists' => $subscribedPlaylists,
             'activePlaylist' => $playlist,
         ]);

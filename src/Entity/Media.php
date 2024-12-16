@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use \App\Enum\MediaTypeEnum;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
@@ -23,22 +22,43 @@ class Media
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $shortDescription = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $longDescription = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $releaseDate = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $coverImage = null;
+
+    #[ORM\Column]
+    private array $staff = [];
+
+    #[ORM\Column]
+    private array $casting = [];
+
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'media')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'media', orphanRemoval: true)]
     private Collection $comments;
 
     /**
      * @var Collection<int, WatchHistory>
      */
-    #[ORM\OneToMany(targetEntity: WatchHistory::class, mappedBy: 'media')]
+    #[ORM\OneToMany(targetEntity: WatchHistory::class, mappedBy: 'media', orphanRemoval: true)]
     private Collection $watchHistories;
 
     /**
      * @var Collection<int, PlaylistMedia>
      */
-    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'media')]
+    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'media', orphanRemoval: true)]
     private Collection $playlistMedia;
 
     /**
@@ -53,27 +73,6 @@ class Media
     #[ORM\ManyToMany(targetEntity: Language::class, inversedBy: 'medias')]
     private Collection $languages;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $shortDescription = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $longDescription = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $releaseDate = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $coverImage = null;
-
-    #[ORM\Column]
-    private array $staff = [];
-
-    #[ORM\Column]
-    private array $casting = [];
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -86,6 +85,97 @@ class Media
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getShortDescription(): ?string
+    {
+        return $this->shortDescription;
+    }
+
+    public function setShortDescription(string $shortDescription): static
+    {
+        $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    public function getLongDescription(): ?string
+    {
+        return $this->longDescription;
+    }
+
+    public function setLongDescription(string $longDescription): static
+    {
+        $this->longDescription = $longDescription;
+
+        return $this;
+    }
+
+    public function getReleaseDate(): ?\DateTimeInterface
+    {
+        return $this->releaseDate;
+    }
+
+    public function setReleaseDate(\DateTimeInterface $releaseDate): static
+    {
+        $this->releaseDate = $releaseDate;
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(string $coverImage): static
+    {
+        $this->coverImage = $coverImage;
+
+        return $this;
+    }
+
+    public function getStaff(): array
+    {
+        return $this->staff;
+    }
+
+    public function setStaff(array $staff): static
+    {
+        $this->staff = $staff;
+
+        return $this;
+    }
+
+    public function getCasting(): array
+    {
+        return $this->casting;
+    }
+
+    public function setCasting(array $casting): static
+    {
+        $this->casting = $casting;
+
+        return $this;
     }
 
     /**
@@ -222,90 +312,6 @@ class Media
     public function removeLanguage(Language $language): static
     {
         $this->languages->removeElement($language);
-
-        return $this;
-    }
-
-    public function getShortDescription(): ?string
-    {
-        return $this->shortDescription;
-    }
-
-    public function setShortDescription(string $shortDescription): static
-    {
-        $this->shortDescription = $shortDescription;
-
-        return $this;
-    }
-
-    public function getLongDescription(): ?string
-    {
-        return $this->longDescription;
-    }
-
-    public function setLongDescription(string $longDescription): static
-    {
-        $this->longDescription = $longDescription;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getReleaseDate(): ?\DateTimeInterface
-    {
-        return $this->releaseDate;
-    }
-
-    public function setReleaseDate(\DateTimeInterface $releaseDate): static
-    {
-        $this->releaseDate = $releaseDate;
-
-        return $this;
-    }
-
-    public function getCoverImage(): ?string
-    {
-        return $this->coverImage;
-    }
-
-    public function setCoverImage(string $coverImage): static
-    {
-        $this->coverImage = $coverImage;
-
-        return $this;
-    }
-
-    public function getStaff(): array
-    {
-        return $this->staff;
-    }
-
-    public function setStaff(array $staff): static
-    {
-        $this->staff = $staff;
-
-        return $this;
-    }
-
-    public function getCasting(): array
-    {
-        return $this->casting;
-    }
-
-    public function setCasting(array $casting): static
-    {
-        $this->casting = $casting;
 
         return $this;
     }

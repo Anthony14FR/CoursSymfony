@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
@@ -15,14 +16,14 @@ class Subscription
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $price = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $price = null;
 
     #[ORM\Column]
-    private ?int $duration = null;
+    private ?int $duration_in_months = null;
 
     /**
      * @var Collection<int, User>
@@ -33,7 +34,7 @@ class Subscription
     /**
      * @var Collection<int, SubscriptionHistory>
      */
-    #[ORM\OneToMany(targetEntity: SubscriptionHistory::class, mappedBy: 'subscription')]
+    #[ORM\OneToMany(targetEntity: SubscriptionHistory::class, mappedBy: 'subscription', orphanRemoval: true)]
     private Collection $subscriptionHistories;
 
     public function __construct()
@@ -45,6 +46,13 @@ class Subscription
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -59,26 +67,26 @@ class Subscription
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getDuration(): ?int
+    public function getDurationInMonths(): ?int
     {
-        return $this->duration;
+        return $this->duration_in_months;
     }
 
-    public function setDuration(int $duration): static
+    public function setDurationInMonths(int $duration_in_months): static
     {
-        $this->duration = $duration;
+        $this->duration_in_months = $duration_in_months;
 
         return $this;
     }
